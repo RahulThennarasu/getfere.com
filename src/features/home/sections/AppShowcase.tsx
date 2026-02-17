@@ -1,5 +1,5 @@
-import { type MouseEvent, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 
 import containerVideo from "@/assets/media/container.mp4";
 import databasesVideo from "@/assets/media/databases.mp4";
@@ -25,6 +25,7 @@ export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const railRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const getIndexFromClientX = (clientX: number) => {
     const rail = railRef.current;
@@ -36,6 +37,20 @@ export function AppShowcase() {
     const nextIndex = Math.round(ratio * (showcaseMedia.length - 1));
     return Math.min(Math.max(nextIndex, 0), showcaseMedia.length - 1);
   };
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+      if (index === currentIndex) {
+        const playPromise = video.play();
+        if (playPromise) {
+          playPromise.catch(() => {});
+        }
+      } else {
+        video.pause();
+      }
+    });
+  }, [currentIndex]);
 
   return (
     <div className="pt-20 pb-48 md:pb-56">
@@ -166,35 +181,41 @@ export function AppShowcase() {
               }}
               style={{ minHeight: "600px" }}
             >
-              <AnimatePresence initial={false}>
-                <motion.div
-                  key={currentIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute inset-2"
-                >
-                  {showcaseMedia[currentIndex].type === "video" ? (
-                    <video
-                      src={showcaseMedia[currentIndex].src}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                      aria-label={showcaseMedia[currentIndex].label}
-                      className="w-full h-full object-cover rounded-2xl"
-                    />
-                  ) : (
-                    <img
-                      src={showcaseMedia[currentIndex].src}
-                      alt={showcaseMedia[currentIndex].label}
-                      className="w-full h-full object-cover rounded-2xl"
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
+              {showcaseMedia.map((media, index) => {
+                const isActive = index === currentIndex;
+                return (
+                  <motion.div
+                    key={media.label}
+                    initial={false}
+                    animate={{ opacity: isActive ? 1 : 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className={`absolute inset-2 ${isActive ? "pointer-events-auto" : "pointer-events-none"}`}
+                    aria-hidden={!isActive}
+                  >
+                    {media.type === "video" ? (
+                      <video
+                        ref={(node) => {
+                          videoRefs.current[index] = node;
+                        }}
+                        src={media.src}
+                        autoPlay={isActive}
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        aria-label={media.label}
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    ) : (
+                      <img
+                        src={media.src}
+                        alt={media.label}
+                        className="w-full h-full object-cover rounded-2xl"
+                      />
+                    )}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </div>
