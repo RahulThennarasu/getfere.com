@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useMobile } from "@/hooks/useMobile";
 import {
   motion,
   useScroll,
@@ -126,6 +127,7 @@ function LogoItem({
   scatterX,
   scatterY,
   progress,
+  scale,
 }: {
   src: string;
   label: string;
@@ -135,16 +137,17 @@ function LogoItem({
   scatterX: number;
   scatterY: number;
   progress: MotionValue<number>;
+  scale: number;
 }) {
-  // Convert y% to a pixel offset so positioning doesn't depend on container height resolving
+  const size = 160 * scale;
   const finalY = (y / 100) * CONTAINER_H;
 
   // All icons animate together across the full scroll range
-  const translateX = useTransform(progress, [0, 1], [scatterX * 1.5, 0]);
+  const translateX = useTransform(progress, [0, 1], [scatterX * 1.5 * scale, 0]);
   const translateY = useTransform(
     progress,
     [0, 1],
-    [scatterY * 1.5 + finalY, finalY],
+    [scatterY * 1.5 * scale + finalY, finalY],
   );
   // Start with a wild rotation, settle into the final rotation
   const scatterRotate = rotate + (scatterX > 0 ? 45 : -45);
@@ -157,10 +160,10 @@ function LogoItem({
       style={{
         left: `${x}%`,
         top: 0,
-        width: 160,
-        height: 160,
-        marginLeft: -80,
-        marginTop: -80,
+        width: size,
+        height: size,
+        marginLeft: -size / 2,
+        marginTop: -size / 2,
         x: translateX,
         y: translateY,
         rotate: rotateVal,
@@ -179,10 +182,13 @@ function LogoItem({
 
 export function StackPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMobile();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "center center"],
   });
+
+  const logoScale = isMobile ? 0.55 : 1;
 
   return (
     <div className="pt-20 pb-20 px-6" ref={containerRef}>
@@ -191,7 +197,7 @@ export function StackPreview() {
           className="text-black/40 mb-8 relative z-10"
           style={{
             fontFamily: "var(--font-ui)",
-            fontSize: "28px",
+            fontSize: isMobile ? "20px" : "28px",
             fontWeight: 400,
           }}
         >
@@ -200,7 +206,7 @@ export function StackPreview() {
 
         <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
           {logos.map((logo) => (
-            <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
+            <LogoItem key={logo.label} {...logo} progress={scrollYProgress} scale={logoScale} />
           ))}
         </div>
       </div>
