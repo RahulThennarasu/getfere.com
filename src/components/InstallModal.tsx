@@ -4,6 +4,12 @@ import step1Image from 'figma:asset/7f167fe4201aa65260013cc1142f9be6409ff001.png
 import step2Image from 'figma:asset/d60bcc3b6322bd99e7b1920031cf7217f0492ef7.png';
 import step3Image from 'figma:asset/5d408579f08fd0025df36fa6a855491870342003.png';
 
+// Preload images so they're cached before the modal opens
+[step1Image, step2Image, step3Image].forEach((src) => {
+  const img = new Image();
+  img.src = src;
+});
+
 interface InstallModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,7 +26,7 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/30 z-50"
           />
           
           {/* Modal */}
