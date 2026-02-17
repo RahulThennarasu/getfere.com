@@ -1,5 +1,4 @@
 import { type MouseEvent, useEffect, useRef, useState } from "react";
-import { useMobile } from "@/hooks/useMobile";
 import { motion } from "motion/react";
 
 import containerVideo from "@/assets/media/container.mp4";
@@ -25,7 +24,14 @@ const showcaseMedia: ShowcaseMedia[] = [
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
-  const isMobile = useMobile();
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
