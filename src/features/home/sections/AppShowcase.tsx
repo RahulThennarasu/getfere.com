@@ -1,5 +1,4 @@
 import { type MouseEvent, useEffect, useRef, useState } from "react";
-import { useMobile } from "@/hooks/useMobile";
 import { motion } from "motion/react";
 
 import containerVideo from "@/assets/media/container.mp4";
@@ -25,7 +24,6 @@ const showcaseMedia: ShowcaseMedia[] = [
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
-  const isMobile = useMobile();
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -65,7 +63,7 @@ export function AppShowcase() {
             animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
             transition={{ duration: 0.72, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              marginBottom: isMobile ? "-55px" : "-100px",
+              marginBottom: "-100px",
               zIndex: 2,
             }}
           >
@@ -181,7 +179,7 @@ export function AppShowcase() {
                 delay: 0.62,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              style={{ minHeight: isMobile ? "300px" : "600px" }}
+              style={{ minHeight: "600px" }}
             >
               {showcaseMedia.map((media, index) => {
                 const isActive = index === currentIndex;

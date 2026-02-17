@@ -2,20 +2,18 @@ import appleLogo from 'figma:asset/70b20c352fb2d88c9e01a95fc168f8068a048f75.png'
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { InstallModal } from '../components/InstallModal';
-import { useMobile } from '@/hooks/useMobile';
 
 export function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isMobile = useMobile();
 
   return (
-    <div className={isMobile ? 'pt-20 pb-20 px-6' : 'pt-32 pb-20 px-6'}>
+    <div className="pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <motion.h1
           className="text-black/80"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: isMobile ? '46px' : '72px',
+            fontSize: '72px',
             fontWeight: 400,
             letterSpacing: '-0.02em',
             lineHeight: '1.1',

@@ -1,7 +1,4 @@
-import { useMobile } from '@/hooks/useMobile';
-
 export function Navigation() {
-  const isMobile = useMobile();
   return (
     <nav 
       className="fixed top-0 left-0 right-0 z-50 px-3"
@@ -18,7 +15,7 @@ export function Navigation() {
           className="text-black"
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: isMobile ? '32px' : '55px',
+            fontSize: '55px',
             fontWeight: 500,
             letterSpacing: '-0.02em',
           }}
