@@ -2,7 +2,7 @@ import fereLogo from "figma:asset/57f01bd1a49ce813d16dd06af7b16e2bd18ea4b6.png";
 
 export function Footer() {
   return (
-    <footer className="py-16 px-6 mt-32">
+    <footer className="py-16 px-6 mt-96">
       <div className="max-w-6xl mx-auto">
         <div className="border-t border-black/10 mb-12"></div>
         
