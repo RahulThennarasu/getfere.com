@@ -1,4 +1,5 @@
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { useMobile } from "@/hooks/useMobile";
 import { motion } from "motion/react";
 
 import containerVideo from "@/assets/media/container.mp4";
@@ -24,6 +25,7 @@ const showcaseMedia: ShowcaseMedia[] = [
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const isMobile = useMobile();
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -67,11 +69,11 @@ export function AppShowcase() {
               zIndex: 2,
             }}
           >
-            <div className="mx-auto max-w-5xl overflow-x-auto">
+            <div className="mx-auto max-w-5xl">
               <div className="flex justify-center">
                 <div
                   ref={railRef}
-                  className={`inline-flex min-w-max gap-2 rounded-full border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm ${
+                  className={`${isMobile ? 'flex flex-wrap justify-center rounded-3xl' : 'inline-flex min-w-max rounded-full'} gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm ${
                     isScrubbing ? "cursor-ew-resize" : "cursor-default"
                   }`}
                   onMouseDown={(event: MouseEvent<HTMLDivElement>) => {
@@ -91,14 +93,14 @@ export function AppShowcase() {
                       <button
                         key={media.label}
                         onClick={() => setCurrentIndex(index)}
-                        className={`relative h-12 px-6 rounded-full whitespace-nowrap transition-all duration-300 ${
+                        className={`relative ${isMobile ? 'h-9 px-4' : 'h-12 px-6'} rounded-full whitespace-nowrap transition-all duration-300 ${
                           isActive
                             ? "text-black"
                             : "text-black/65 hover:text-black hover:-translate-y-0.5"
                         }`}
                         style={{
                           fontFamily: "var(--font-ui)",
-                          fontSize: "15px",
+                          fontSize: isMobile ? "13px" : "15px",
                           fontWeight: 500,
                         }}
                         aria-pressed={isActive}
