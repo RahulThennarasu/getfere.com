@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
   useScroll,
@@ -198,7 +199,13 @@ export function StackPreview() {
           your stack, scattered across a dozen tools
         </p>
 
-        <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8 overflow-hidden md:overflow-visible">
+        <img
+          src={mobileIcons}
+          alt="Stack icons"
+          className="block md:hidden w-full max-w-sm mx-auto mt-8"
+          draggable={false}
+        />
+        <div className="hidden md:block relative h-[580px] max-w-2xl mx-auto mt-8">
           {logos.map((logo) => (
             <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
           ))}
