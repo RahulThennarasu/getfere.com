@@ -1,4 +1,4 @@
-import fereLogo from "figma:asset/57f01bd1a49ce813d16dd06af7b16e2bd18ea4b6.png";
+import fereLogo from "@/assets/fere.png";
 
 export function Footer() {
   return (
