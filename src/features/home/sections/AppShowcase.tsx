@@ -61,7 +61,7 @@ export function AppShowcase() {
   }, [currentIndex]);
 
   return (
-    <div className="pt-20 pb-48 md:pb-56">
+    <div className="pt-20" style={{ paddingBottom: isMobile ? '24px' : '192px' }}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative mx-auto max-w-6xl w-full flex flex-col">
           {/* Tab navigation */}

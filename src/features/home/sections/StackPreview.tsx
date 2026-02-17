@@ -195,7 +195,7 @@ export function StackPreview() {
   });
 
   return (
-    <div className="pt-20 pb-20 px-6" ref={containerRef}>
+    <div className="pb-20 px-6" style={{ paddingTop: isMobile ? '12px' : '80px' }} ref={containerRef}>
       <div className="max-w-4xl mx-auto text-center">
         <p
           className="text-black/40 mb-8 relative z-10"
