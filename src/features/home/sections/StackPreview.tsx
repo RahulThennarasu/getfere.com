@@ -198,7 +198,7 @@ export function StackPreview() {
           your stack, scattered across a dozen tools
         </p>
 
-        <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
+        <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8 overflow-hidden md:overflow-visible">
           {logos.map((logo) => (
             <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
           ))}
