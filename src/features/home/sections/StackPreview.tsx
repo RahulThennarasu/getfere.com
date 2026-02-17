@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
@@ -180,13 +180,22 @@ function LogoItem({
 
 export function StackPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "center center"],
   });
 
   return (
-    <div className="pt-20 pb-20 px-6 overflow-hidden md:overflow-visible" ref={containerRef}>
+    <div className="pt-20 pb-20 px-6" ref={containerRef}>
       <div className="max-w-4xl mx-auto text-center">
         <p
           className="text-black/40 mb-8 relative z-10"
@@ -199,17 +208,20 @@ export function StackPreview() {
           your stack, scattered across a dozen tools
         </p>
 
-        <img
-          src={mobileIcons}
-          alt="Stack icons"
-          className="block md:hidden w-full max-w-sm mx-auto mt-8"
-          draggable={false}
-        />
-        <div className="hidden md:block relative h-[580px] max-w-2xl mx-auto mt-8">
-          {logos.map((logo) => (
-            <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
-          ))}
-        </div>
+        {isMobile ? (
+          <img
+            src={mobileIcons}
+            alt="Stack icons"
+            className="w-full max-w-sm mx-auto mt-8"
+            draggable={false}
+          />
+        ) : (
+          <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
+            {logos.map((logo) => (
+              <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
