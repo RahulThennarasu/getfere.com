@@ -21,7 +21,7 @@ const showcaseMedia: ShowcaseMedia[] = [
   { src: databasesVideo, label: "databases", type: "video" },
 ];
 
-const mobileChipLabels = ["service", "container", "requests", "query", "databases"];
+const mobileChipLabels = ["service", "container", "requests", "query", "data"];
 
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,7 +86,7 @@ export function AppShowcase() {
                   ref={railRef}
                   className={`${
                     isMobile
-                      ? "flex w-full items-center gap-2 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                      ? "flex w-full items-center justify-center gap-2 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                       : "inline-flex min-w-max rounded-full gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm"
                   } ${
                     isScrubbing ? "cursor-ew-resize" : "cursor-default"
@@ -110,7 +110,7 @@ export function AppShowcase() {
                         onClick={() => setCurrentIndex(index)}
                         className={`relative ${
                           isMobile
-                            ? "h-9 px-3 rounded-full shrink-0 border border-black/10 bg-white/55 shadow-[0_6px_16px_rgba(0,0,0,0.06)] backdrop-blur-sm"
+                            ? "h-8 px-3 rounded-lg shrink-0 border border-white/25 bg-white/10 backdrop-blur-[6px]"
                             : "h-12 px-6 rounded-full"
                         } whitespace-nowrap transition-all duration-300 ${
                           isActive
@@ -119,7 +119,7 @@ export function AppShowcase() {
                         }`}
                         style={{
                           fontFamily: "var(--font-ui)",
-                          fontSize: isMobile ? "14px" : "15px",
+                          fontSize: isMobile ? "12px" : "15px",
                           fontWeight: 500,
                         }}
                         aria-pressed={isActive}
@@ -127,14 +127,20 @@ export function AppShowcase() {
                         {isActive && (
                           <motion.span
                             layoutId="active-showcase-pill"
-                            className="absolute inset-0 rounded-full border border-white/45 shadow-[0_10px_24px_rgba(0,0,0,0.1)]"
+                            className={`absolute inset-0 ${
+                              isMobile
+                                ? "rounded-lg border border-white/65 shadow-[0_6px_14px_rgba(0,0,0,0.12)]"
+                                : "rounded-full border border-white/45 shadow-[0_10px_24px_rgba(0,0,0,0.1)]"
+                            }`}
                             style={{
-                              background:
-                                "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 100%)",
-                              backdropFilter: "blur(16px) saturate(1.2)",
-                              WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                              boxShadow:
-                                "inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(255,255,255,0.18), 0 10px 24px rgba(0,0,0,0.1)",
+                              background: isMobile
+                                ? "linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 100%)"
+                                : "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 100%)",
+                              backdropFilter: isMobile ? "blur(10px) saturate(1.15)" : "blur(16px) saturate(1.2)",
+                              WebkitBackdropFilter: isMobile ? "blur(10px) saturate(1.15)" : "blur(16px) saturate(1.2)",
+                              boxShadow: isMobile
+                                ? "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.12)"
+                                : "inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(255,255,255,0.18), 0 10px 24px rgba(0,0,0,0.1)",
                             }}
                             transition={{
                               type: "spring",
@@ -144,7 +150,7 @@ export function AppShowcase() {
                             }}
                           />
                         )}
-                        {isActive && (
+                        {isActive && !isMobile && (
                           <motion.span
                             layoutId="active-showcase-shine"
                             className="absolute left-3 right-3 top-1 h-4 rounded-full pointer-events-none"
@@ -160,7 +166,7 @@ export function AppShowcase() {
                             }}
                           />
                         )}
-                        {isActive && (
+                        {isActive && !isMobile && (
                           <motion.span
                             className="absolute inset-y-1.5 w-7 rounded-full pointer-events-none"
                             style={{
@@ -168,8 +174,8 @@ export function AppShowcase() {
                                 "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.75) 52%, rgba(255,255,255,0) 100%)",
                               filter: "blur(1px)",
                             }}
-                            initial={{ x: isMobile ? -14 : -18, opacity: 0 }}
-                            animate={{ x: isMobile ? 64 : 82, opacity: [0, 0.9, 0] }}
+                            initial={{ x: -18, opacity: 0 }}
+                            animate={{ x: 82, opacity: [0, 0.9, 0] }}
                             transition={{ duration: 0.9, ease: "easeInOut" }}
                           />
                         )}
