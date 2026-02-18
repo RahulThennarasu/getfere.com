@@ -88,8 +88,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                     >
                       1
                     </div>
-                    <div className="rounded-3xl overflow-hidden aspect-[5/4] shadow-sm border border-black/5">
-                      <img src={step1Image} alt="Downloads folder" className="w-full h-full object-cover" />
+                    <div className="bg-white rounded-3xl overflow-hidden aspect-[5/4] shadow-sm border border-black/5">
+                      <img src={step1Image} alt="Downloads folder" className="w-full h-full object-cover object-center" />
                     </div>
                   </div>
                   <p 
@@ -119,8 +119,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                     >
                       2
                     </div>
-                    <div className="bg-white rounded-3xl p-2 aspect-[5/4] flex items-center justify-center shadow-sm border border-black/5">
-                      <img src={step2Image} alt="Drag to Applications" className="w-full h-full object-contain" />
+                    <div className="bg-white rounded-3xl overflow-hidden aspect-[5/4] shadow-sm border border-black/5">
+                      <img src={step2Image} alt="Drag to Applications" className="w-full h-full object-cover object-center" />
                     </div>
                   </div>
                   <p 
@@ -150,8 +150,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                     >
                       3
                     </div>
-                    <div className="bg-white rounded-3xl p-2 aspect-[5/4] flex items-center justify-center shadow-sm border border-black/5">
-                      <img src={step3Image} alt="Open application" className="w-full h-full object-contain" />
+                    <div className="bg-white rounded-3xl overflow-hidden aspect-[5/4] shadow-sm border border-black/5">
+                      <img src={step3Image} alt="Open application" className="w-full h-full object-cover object-center" />
                     </div>
                   </div>
                   <p 
