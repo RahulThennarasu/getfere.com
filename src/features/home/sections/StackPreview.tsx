@@ -26,7 +26,7 @@ const logos = [
     src: openai,
     label: "OpenAI",
     x: 41,
-    y: 10,
+    y: 15,
     rotate: -23,
     scatterX: -80,
     scatterY: -320,
@@ -35,7 +35,7 @@ const logos = [
     src: vercel,
     label: "Vercel",
     x: 69,
-    y: 14,
+    y: 19,
     rotate: -22,
     scatterX: 260,
     scatterY: -300,
@@ -44,7 +44,7 @@ const logos = [
     src: docker,
     label: "Docker",
     x: 24,
-    y: 18,
+    y: 23,
     rotate: 0,
     scatterX: -350,
     scatterY: -280,
@@ -54,7 +54,7 @@ const logos = [
     src: k8,
     label: "Kubernetes",
     x: 56,
-    y: 21,
+    y: 26,
     rotate: -60,
     scatterX: 100,
     scatterY: -180,
@@ -63,7 +63,7 @@ const logos = [
     src: rabbitmq,
     label: "RabbitMQ",
     x: 37,
-    y: 28,
+    y: 33,
     rotate: -50,
     scatterX: -200,
     scatterY: 80,
@@ -72,7 +72,7 @@ const logos = [
     src: github,
     label: "GitHub",
     x: 77,
-    y: 27,
+    y: 32,
     rotate: -6.6,
     scatterX: 340,
     scatterY: -40,
@@ -82,7 +82,7 @@ const logos = [
     src: cloudfare,
     label: "Cloudflare",
     x: 70,
-    y: 39,
+    y: 44,
     rotate: -52.5,
     scatterX: 380,
     scatterY: 200,
@@ -91,7 +91,7 @@ const logos = [
     src: mongoDB,
     label: "MongoDB",
     x: 55,
-    y: 38,
+    y: 43,
     rotate: -18.4,
     scatterX: 140,
     scatterY: 260,
@@ -100,7 +100,7 @@ const logos = [
     src: redis,
     label: "Redis",
     x: 26,
-    y: 41,
+    y: 46,
     rotate: 2.14,
     scatterX: -340,
     scatterY: 240,
@@ -109,7 +109,7 @@ const logos = [
     src: firebase,
     label: "Firebase",
     x: 40,
-    y: 45,
+    y: 50,
     rotate: -60,
     scatterX: -120,
     scatterY: 300,
@@ -183,10 +183,10 @@ export function StackPreview() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
+    const mq = window.matchMedia("(max-width: 767px)");
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -195,7 +195,11 @@ export function StackPreview() {
   });
 
   return (
-    <div className={isMobile ? "pb-6 px-6" : "pb-20 px-6"} style={{ paddingTop: isMobile ? '12px' : '80px' }} ref={containerRef}>
+    <div
+      className={isMobile ? "pb-6 px-6" : "pb-20 px-6"}
+      style={{ paddingTop: isMobile ? "12px" : "0px" }}
+      ref={containerRef}
+    >
       <div className="max-w-4xl mx-auto text-center">
         <p
           className="text-black/40 mb-8 relative z-10"
