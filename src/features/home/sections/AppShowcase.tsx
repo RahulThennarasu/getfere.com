@@ -91,7 +91,7 @@ export function AppShowcase() {
                   ref={railRef}
                   className={`${
                     isMobile
-                      ? "flex w-full items-center justify-center gap-1 rounded-full border border-white/[0.35] bg-white/[0.08] p-1 backdrop-blur-[8px]"
+                      ? "flex w-[full] items-center justify-center gap-1 rounded-full border border-white/[0.35] bg-white/[0.08] p-1 backdrop-blur-[8px]"
                       : "inline-flex min-w-max rounded-full gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm"
                   } ${isScrubbing ? "cursor-ew-resize" : "cursor-default"}`}
                   onMouseDown={(event: MouseEvent<HTMLDivElement>) => {

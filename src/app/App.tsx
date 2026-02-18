@@ -18,6 +18,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const ua = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isWebKit = /WebKit/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+
+    if (!(isIOS && isWebKit)) return;
+
     let startY = 0;
 
     const onTouchStart = (event: TouchEvent) => {
@@ -31,6 +37,7 @@ export default function App() {
       const atTop = window.scrollY <= 0;
       const maxScrollY =
         document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScrollY <= 0) return;
       const atBottom = window.scrollY >= maxScrollY - 1;
 
       if ((atTop && pullingDown) || (atBottom && pullingUp)) {
