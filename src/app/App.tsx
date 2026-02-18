@@ -22,7 +22,7 @@ export default function App() {
       <Navigation />
       <Hero />
       <AppShowcase />
-      <section style={{ paddingTop: isMobile ? "20px" : "100px", paddingBottom: isMobile ? "60px" : "300px" }}>
+      <section style={{ paddingTop: isMobile ? "20px" : "100px", paddingBottom: isMobile ? "12px" : "300px" }}>
         <StackPreview />
       </section>
       <Footer />

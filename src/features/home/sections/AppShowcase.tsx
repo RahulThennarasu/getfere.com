@@ -21,6 +21,8 @@ const showcaseMedia: ShowcaseMedia[] = [
   { src: databasesVideo, label: "databases", type: "video" },
 ];
 
+const mobileChipLabels = ["service", "container", "requests", "query", "databases"];
+
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -61,7 +63,10 @@ export function AppShowcase() {
   }, [currentIndex]);
 
   return (
-    <div className="pt-20" style={{ paddingBottom: isMobile ? '24px' : '192px' }}>
+    <div
+      className={isMobile ? "pt-12" : "pt-20"}
+      style={{ paddingBottom: isMobile ? "24px" : "192px" }}
+    >
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative mx-auto max-w-6xl w-full flex flex-col">
           {/* Tab navigation */}
@@ -71,7 +76,7 @@ export function AppShowcase() {
             animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
             transition={{ duration: 0.72, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              marginBottom: "-100px",
+              marginBottom: isMobile ? "-36px" : "-100px",
               zIndex: 2,
             }}
           >
@@ -79,7 +84,11 @@ export function AppShowcase() {
               <div className="flex justify-center">
                 <div
                   ref={railRef}
-                  className={`${isMobile ? 'flex flex-wrap justify-center rounded-3xl' : 'inline-flex min-w-max rounded-full'} gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm ${
+                  className={`${
+                    isMobile
+                      ? "flex w-full items-center gap-2 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                      : "inline-flex min-w-max rounded-full gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm"
+                  } ${
                     isScrubbing ? "cursor-ew-resize" : "cursor-default"
                   }`}
                   onMouseDown={(event: MouseEvent<HTMLDivElement>) => {
@@ -99,14 +108,18 @@ export function AppShowcase() {
                       <button
                         key={media.label}
                         onClick={() => setCurrentIndex(index)}
-                        className={`relative ${isMobile ? 'h-9 px-4' : 'h-12 px-6'} rounded-full whitespace-nowrap transition-all duration-300 ${
+                        className={`relative ${
+                          isMobile
+                            ? "h-9 px-3 rounded-full shrink-0 border border-black/10 bg-white/55 shadow-[0_6px_16px_rgba(0,0,0,0.06)] backdrop-blur-sm"
+                            : "h-12 px-6 rounded-full"
+                        } whitespace-nowrap transition-all duration-300 ${
                           isActive
                             ? "text-black"
-                            : "text-black/65 hover:text-black hover:-translate-y-0.5"
+                            : "text-black/60 hover:text-black hover:-translate-y-0.5"
                         }`}
                         style={{
                           fontFamily: "var(--font-ui)",
-                          fontSize: isMobile ? "13px" : "15px",
+                          fontSize: isMobile ? "14px" : "15px",
                           fontWeight: 500,
                         }}
                         aria-pressed={isActive}
@@ -155,18 +168,20 @@ export function AppShowcase() {
                                 "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.75) 52%, rgba(255,255,255,0) 100%)",
                               filter: "blur(1px)",
                             }}
-                            initial={{ x: -18, opacity: 0 }}
-                            animate={{ x: 82, opacity: [0, 0.9, 0] }}
+                            initial={{ x: isMobile ? -14 : -18, opacity: 0 }}
+                            animate={{ x: isMobile ? 64 : 82, opacity: [0, 0.9, 0] }}
                             transition={{ duration: 0.9, ease: "easeInOut" }}
                           />
                         )}
                         <span
-                          className={`relative z-10 inline-flex items-center gap-2 ${isActive ? "text-black" : ""}`}
+                          className={`relative z-10 inline-flex items-center gap-2 whitespace-nowrap leading-none ${isActive ? "text-black" : ""}`}
                         >
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-black/45" : "bg-black/30"}`}
-                          />
-                          {media.label}
+                          {!isMobile && (
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-black/45" : "bg-black/30"}`}
+                            />
+                          )}
+                          {isMobile ? mobileChipLabels[index] : media.label}
                         </span>
                       </button>
                     );
@@ -187,7 +202,7 @@ export function AppShowcase() {
                 delay: 0.62,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              style={{ minHeight: "600px" }}
+              style={{ minHeight: isMobile ? "260px" : "600px" }}
             >
               {showcaseMedia.map((media, index) => {
                 const isActive = index === currentIndex;

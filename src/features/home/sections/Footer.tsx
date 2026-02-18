@@ -2,9 +2,9 @@ import fereLogo from "@/assets/fere.png";
 
 export function Footer() {
   return (
-    <footer className="py-16 px-6 mt-96">
+    <footer className="py-16 px-6 mt-6 md:mt-96">
       <div className="max-w-6xl mx-auto">
-        <div className="border-t border-black/10 mb-12"></div>
+        <div className="border-t border-black/10 mb-6 md:mb-12"></div>
         
         <div className="mb-12">
           <img 

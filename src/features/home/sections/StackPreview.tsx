@@ -195,7 +195,7 @@ export function StackPreview() {
   });
 
   return (
-    <div className="pb-20 px-6" style={{ paddingTop: isMobile ? '12px' : '80px' }} ref={containerRef}>
+    <div className={isMobile ? "pb-6 px-6" : "pb-20 px-6"} style={{ paddingTop: isMobile ? '12px' : '80px' }} ref={containerRef}>
       <div className="max-w-4xl mx-auto text-center">
         <p
           className="text-black/40 mb-8 relative z-10"
@@ -209,12 +209,14 @@ export function StackPreview() {
         </p>
 
         {isMobile ? (
-          <img
-            src={mobileIcons}
-            alt="Stack icons"
-            className="w-full max-w-sm mx-auto mt-8"
-            draggable={false}
-          />
+          <div className="w-full max-w-sm mx-auto mt-8 h-[300px] overflow-hidden">
+            <img
+              src={mobileIcons}
+              alt="Stack icons"
+              className="w-full h-full object-cover object-top"
+              draggable={false}
+            />
+          </div>
         ) : (
           <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
             {logos.map((logo) => (
