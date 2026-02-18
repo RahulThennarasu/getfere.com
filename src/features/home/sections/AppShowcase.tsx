@@ -86,7 +86,7 @@ export function AppShowcase() {
                   ref={railRef}
                   className={`${
                     isMobile
-                      ? "flex w-full items-center justify-center gap-2 overflow-x-auto px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                      ? "flex w-full items-center justify-center gap-1 rounded-full border border-white/[0.35] bg-white/[0.08] p-1 backdrop-blur-[8px] overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                       : "inline-flex min-w-max rounded-full gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm"
                   } ${
                     isScrubbing ? "cursor-ew-resize" : "cursor-default"
@@ -110,7 +110,7 @@ export function AppShowcase() {
                         onClick={() => setCurrentIndex(index)}
                         className={`relative ${
                           isMobile
-                            ? "h-8 px-3 rounded-lg shrink-0 border border-white/25 bg-white/10 backdrop-blur-[6px]"
+                            ? "h-8 px-3 rounded-full shrink-0"
                             : "h-12 px-6 rounded-full"
                         } whitespace-nowrap transition-all duration-300 ${
                           isActive
@@ -124,23 +124,40 @@ export function AppShowcase() {
                         }}
                         aria-pressed={isActive}
                       >
-                        {isActive && (
+                        {isActive && isMobile && (
+                          <motion.span
+                            layoutId="active-showcase-pill-mobile"
+                            className="absolute rounded-full border border-white/55 shadow-[0_4px_10px_rgba(0,0,0,0.1)] pointer-events-none"
+                            style={{
+                              top: 3,
+                              right: 3,
+                              bottom: 3,
+                              left: 3,
+                              background: "linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 100%)",
+                              backdropFilter: "blur(10px) saturate(1.15)",
+                              WebkitBackdropFilter: "blur(10px) saturate(1.15)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.12)",
+                            }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 320,
+                              damping: 28,
+                              mass: 0.9,
+                            }}
+                          />
+                        )}
+                        {isActive && !isMobile && (
                           <motion.span
                             layoutId="active-showcase-pill"
-                            className={`absolute inset-0 ${
-                              isMobile
-                                ? "rounded-lg border border-white/65 shadow-[0_6px_14px_rgba(0,0,0,0.12)]"
-                                : "rounded-full border border-white/45 shadow-[0_10px_24px_rgba(0,0,0,0.1)]"
-                            }`}
+                            className="absolute inset-0 rounded-full border border-white/45 shadow-[0_10px_24px_rgba(0,0,0,0.1)]"
                             style={{
-                              background: isMobile
-                                ? "linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 100%)"
-                                : "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 100%)",
-                              backdropFilter: isMobile ? "blur(10px) saturate(1.15)" : "blur(16px) saturate(1.2)",
-                              WebkitBackdropFilter: isMobile ? "blur(10px) saturate(1.15)" : "blur(16px) saturate(1.2)",
-                              boxShadow: isMobile
-                                ? "inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(255,255,255,0.35), 0 6px 14px rgba(0,0,0,0.12)"
-                                : "inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(255,255,255,0.18), 0 10px 24px rgba(0,0,0,0.1)",
+                              background:
+                                "linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 100%)",
+                              backdropFilter: "blur(16px) saturate(1.2)",
+                              WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+                              boxShadow:
+                                "inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -1px 0 rgba(255,255,255,0.18), 0 10px 24px rgba(0,0,0,0.1)",
                             }}
                             transition={{
                               type: "spring",
