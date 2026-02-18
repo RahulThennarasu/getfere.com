@@ -46,7 +46,7 @@ const logos = [
     x: 24,
     y: 23,
     rotate: 0,
-    scatterX: -350,
+    scatterX: -300,
     scatterY: -280,
   },
   // Middle layer
@@ -74,7 +74,7 @@ const logos = [
     x: 77,
     y: 32,
     rotate: -6.6,
-    scatterX: 340,
+    scatterX: 280,
     scatterY: -40,
   },
   // Front layer (rendered last, on top)
@@ -84,7 +84,7 @@ const logos = [
     x: 70,
     y: 44,
     rotate: -52.5,
-    scatterX: 380,
+    scatterX: 250,
     scatterY: 200,
   },
   {

@@ -17,8 +17,38 @@ export default function App() {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
+  useEffect(() => {
+    let startY = 0;
+
+    const onTouchStart = (event: TouchEvent) => {
+      startY = event.touches[0]?.clientY ?? 0;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const currentY = event.touches[0]?.clientY ?? startY;
+      const pullingDown = currentY > startY;
+      const pullingUp = currentY < startY;
+      const atTop = window.scrollY <= 0;
+      const maxScrollY =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const atBottom = window.scrollY >= maxScrollY - 1;
+
+      if ((atTop && pullingDown) || (atBottom && pullingUp)) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove", onTouchMove);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#f7f6f3]">
+    <div className="min-h-screen bg-[#f7f6f3] overflow-x-hidden">
       <Navigation />
       <Hero />
       <AppShowcase />
