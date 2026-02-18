@@ -29,10 +29,10 @@ export function AppShowcase() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
+    const mq = window.matchMedia("(max-width: 767px)");
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -74,9 +74,14 @@ export function AppShowcase() {
             className="w-full relative mb-0"
             initial={{ opacity: 0, y: 20, scale: 0.72 }}
             animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
-            transition={{ duration: 0.72, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.72,
+              delay: 0.62,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             style={{
-              marginBottom: isMobile ? "-36px" : "-100px",
+              marginTop: isMobile ? "-8px" : "0px",
+              marginBottom: isMobile ? "10px" : "-100px",
               zIndex: 2,
             }}
           >
@@ -88,9 +93,7 @@ export function AppShowcase() {
                     isMobile
                       ? "flex w-full items-center justify-center gap-1 rounded-full border border-white/[0.35] bg-white/[0.08] p-1 backdrop-blur-[8px] overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                       : "inline-flex min-w-max rounded-full gap-2 border border-black/10 bg-white/45 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm"
-                  } ${
-                    isScrubbing ? "cursor-ew-resize" : "cursor-default"
-                  }`}
+                  } ${isScrubbing ? "cursor-ew-resize" : "cursor-default"}`}
                   onMouseDown={(event: MouseEvent<HTMLDivElement>) => {
                     setIsScrubbing(true);
                     setCurrentIndex(getIndexFromClientX(event.clientX));
@@ -133,7 +136,8 @@ export function AppShowcase() {
                               right: 3,
                               bottom: 3,
                               left: 3,
-                              background: "linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 100%)",
+                              background:
+                                "linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.12) 100%)",
                               backdropFilter: "blur(10px) saturate(1.15)",
                               WebkitBackdropFilter: "blur(10px) saturate(1.15)",
                               boxShadow:
