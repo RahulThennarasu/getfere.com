@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { InstallModal } from "../components/InstallModal";
+import appleLogo from "@/assets/apple.png";
 
 export function BottomCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,9 +28,7 @@ export function BottomCTA() {
             fontWeight: 500,
           }}
         >
-          <span className="inline-flex items-center justify-center h-5 px-2 rounded bg-white/15 text-[11px] uppercase tracking-wide">
-            Mac
-          </span>
+          <img src={appleLogo} alt="Apple" className="h-4 w-auto" />
           Get for Mac
         </button>
       </div>

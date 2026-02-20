@@ -1,5 +1,13 @@
 import { X, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import step1Image from "@/assets/step_1.png";
+import step2Image from "@/assets/step_2.png";
+import step3Image from "@/assets/step_3.png";
+
+[step1Image, step2Image, step3Image].forEach((src) => {
+  const img = new Image();
+  img.src = src;
+});
 
 interface InstallModalProps {
   isOpen: boolean;
@@ -80,12 +88,11 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                       1
                     </div>
                     <div className="bg-white rounded-3xl overflow-hidden aspect-[5/4] shadow-sm border border-black/5">
-                      <div className="w-full h-full flex items-center justify-center bg-black/[0.03]">
-                        <div className="text-center">
-                          <p className="text-black font-medium">Downloads</p>
-                          <p className="text-black/50 text-sm mt-1">fere.dmg</p>
-                        </div>
-                      </div>
+                      <img
+                        src={step1Image}
+                        alt="Downloads folder"
+                        className="w-full h-full object-cover object-center"
+                      />
                     </div>
                   </div>
                   <p
@@ -119,9 +126,11 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                       2
                     </div>
                     <div className="bg-white rounded-3xl p-2 aspect-[5/4] flex items-center justify-center shadow-sm border border-black/5">
-                      <div className="w-full h-full rounded-2xl border border-black/10 bg-black/[0.03] flex items-center justify-center">
-                        <p className="text-black/70 text-sm">Drag to Applications</p>
-                      </div>
+                      <img
+                        src={step2Image}
+                        alt="Drag to Applications"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                   </div>
                   <p
@@ -155,9 +164,11 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                       3
                     </div>
                     <div className="bg-white rounded-3xl p-2 aspect-[5/4] flex items-center justify-center shadow-sm border border-black/5">
-                      <div className="w-full h-full rounded-2xl border border-black/10 bg-black/[0.03] flex items-center justify-center">
-                        <p className="text-black/70 text-sm">Open Fere</p>
-                      </div>
+                      <img
+                        src={step3Image}
+                        alt="Open application"
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                   </div>
                   <p
