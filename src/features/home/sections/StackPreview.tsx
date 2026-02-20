@@ -17,6 +17,7 @@ import openai from "@/assets/stack/openai.png";
 import rabbitmq from "@/assets/stack/rabbitmq.png";
 import redis from "@/assets/stack/redis.png";
 import vercel from "@/assets/stack/vercel.png";
+import fereLogo from "@/assets/fere.png";
 
 // Positions from design, compressed toward center for a tight overlapping pile
 // Images are pre-rotated so rotate is 0
@@ -150,7 +151,7 @@ function LogoItem({
   // Start with a wild rotation, settle into the final rotation
   const scatterRotate = rotate + (scatterX > 0 ? 45 : -45);
   const rotateVal = useTransform(progress, [0, 1], [scatterRotate, rotate]);
-  const opacity = 1;
+  const opacity = useTransform(progress, [0, 0.72, 0.92, 1], [1, 1, 0, 0]);
 
   return (
     <motion.div
@@ -193,6 +194,31 @@ export function StackPreview() {
     target: containerRef,
     offset: ["start end", "center center"],
   });
+  const desktopTextStartOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.7, 0.9, 1],
+    [1, 1, 0, 0],
+  );
+  const desktopTextEndOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.7, 0.9, 1],
+    [0, 0, 1, 1],
+  );
+  const desktopFereOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.72, 0.92, 1],
+    [0, 0, 1, 1],
+  );
+  const mobileStackOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.72, 0.92, 1],
+    [1, 1, 0, 0],
+  );
+  const mobileFereOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.72, 0.92, 1],
+    [0, 0, 1, 1],
+  );
 
   return (
     <div
@@ -201,31 +227,106 @@ export function StackPreview() {
       ref={containerRef}
     >
       <div className="max-w-4xl mx-auto text-center">
-        <p
-          className="text-black/40 mb-8 relative z-10"
-          style={{
-            fontFamily: "var(--font-ui)",
-            fontSize: "28px",
-            fontWeight: 400,
-          }}
-        >
-          your stack, scattered across a dozen tools
-        </p>
+        {isMobile ? (
+          <div className="mb-3 -mt-6 relative z-10 h-16">
+            <motion.p
+              className="text-black/40 absolute inset-0"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextStartOpacity,
+                y: -70,
+              }}
+            >
+              your stack, scattered across a dozen tools
+            </motion.p>
+            <motion.p
+              className="text-black/40 absolute inset-0"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextEndOpacity,
+                y: -24,
+              }}
+            >
+              observed by one app
+            </motion.p>
+          </div>
+        ) : (
+          <div className="mb-8 relative z-10 h-16">
+            <motion.p
+              className="text-black/40 absolute inset-0"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextStartOpacity,
+              }}
+            >
+              your stack, scattered across a dozen tools
+            </motion.p>
+            <motion.p
+              className="text-black/40 absolute inset-0"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextEndOpacity,
+              }}
+            >
+              observed by one app
+            </motion.p>
+          </div>
+        )}
 
         {isMobile ? (
-          <div className="w-full max-w-sm mx-auto mt-8 h-[300px] overflow-hidden">
-            <img
+          <div className="relative w-full max-w-sm mx-auto mt-2 h-[300px] overflow-hidden">
+            <motion.img
               src={mobileIcons}
               alt="Stack icons"
               className="w-full h-full object-cover object-top"
+              style={{ opacity: mobileStackOpacity, y: 20 }}
               draggable={false}
             />
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center pointer-events-none"
+              style={{ opacity: mobileFereOpacity }}
+            >
+              <img
+                src={fereLogo}
+                alt="fere logo"
+                className="object-contain"
+                style={{ width: 88, height: 88 }}
+                draggable={false}
+              />
+            </motion.div>
           </div>
         ) : (
           <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
             {logos.map((logo) => (
               <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
             ))}
+            <motion.div
+              className="absolute z-20 pointer-events-none"
+              style={{
+                left: "50%",
+                top: "50%",
+                width: 200,
+                height: 200,
+                marginLeft: -100,
+                marginTop: 100,
+                opacity: desktopFereOpacity,
+              }}
+            >
+              <img
+                src={fereLogo}
+                alt="fere logo"
+                className="w-full h-full object-contain"
+                draggable={false}
+              />
+            </motion.div>
           </div>
         )}
       </div>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import appleLogo from "figma:asset/70b20c352fb2d88c9e01a95fc168f8068a048f75.png";
 import { InstallModal } from "../components/InstallModal";
 
 export function BottomCTA() {
@@ -28,7 +27,9 @@ export function BottomCTA() {
             fontWeight: 500,
           }}
         >
-          <img src={appleLogo} alt="Apple" className="h-4" />
+          <span className="inline-flex items-center justify-center h-5 px-2 rounded bg-white/15 text-[11px] uppercase tracking-wide">
+            Mac
+          </span>
           Get for Mac
         </button>
       </div>

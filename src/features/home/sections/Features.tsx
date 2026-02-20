@@ -1,7 +1,4 @@
 import { Container, Zap, Database, Activity } from 'lucide-react';
-import containersImage from 'figma:asset/999f6f914bbadb0e9e28d77438b5adab273fc4e1.png';
-import requestsImage from 'figma:asset/6e2f7e302fb7ec61e0cf389583b7ec13ca84b89e.png';
-import databaseImage from 'figma:asset/b1bd1acade6530cce4950c28933f5b20849f497d.png';
 
 export function Features() {
   return (
@@ -26,7 +23,9 @@ export function Features() {
               </a>
             </div>
             <div className="rounded-lg overflow-hidden shadow-xl border border-black/10">
-              <img src={containersImage} alt="Container overview" className="w-full" />
+              <div className="w-full aspect-[16/10] bg-gradient-to-br from-black/[0.06] to-black/[0.02] flex items-center justify-center">
+                <Container className="w-16 h-16 text-black/35" />
+              </div>
             </div>
           </div>
         </div>
@@ -35,7 +34,9 @@ export function Features() {
         <div className="mb-32">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 rounded-lg overflow-hidden shadow-xl border border-black/10">
-              <img src={requestsImage} alt="Request tracking" className="w-full" />
+              <div className="w-full aspect-[16/10] bg-gradient-to-br from-black/[0.06] to-black/[0.02] flex items-center justify-center">
+                <Activity className="w-16 h-16 text-black/35" />
+              </div>
             </div>
             <div className="order-1 md:order-2">
               <div className="inline-flex items-center gap-2 bg-white/50 px-4 py-2 rounded-full mb-6 border border-black/10">
@@ -74,7 +75,9 @@ export function Features() {
               </a>
             </div>
             <div className="rounded-lg overflow-hidden shadow-xl border border-black/10">
-              <img src={databaseImage} alt="Database management" className="w-full" />
+              <div className="w-full aspect-[16/10] bg-gradient-to-br from-black/[0.06] to-black/[0.02] flex items-center justify-center">
+                <Database className="w-16 h-16 text-black/35" />
+              </div>
             </div>
           </div>
         </div>
