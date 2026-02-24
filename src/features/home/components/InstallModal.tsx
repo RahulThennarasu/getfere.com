@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import step1Image from "@/assets/step_1.png";
 import step2Image from "@/assets/step_2.png";
 import step3Image from "@/assets/step_3.png";
+import { triggerMacDownload } from "@/config/download";
 
 [step1Image, step2Image, step3Image].forEach((src) => {
   const img = new Image();
@@ -200,7 +201,14 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                   }}
                 >
                   problem?{" "}
-                  <a href="#" className="text-black hover:underline">
+                  <a
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      triggerMacDownload();
+                    }}
+                    className="text-black hover:underline"
+                  >
                     download again
                   </a>
                 </p>

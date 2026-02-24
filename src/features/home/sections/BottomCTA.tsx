@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { InstallModal } from "../components/InstallModal";
 import appleLogo from "@/assets/apple.png";
+import { triggerMacDownload } from "@/config/download";
 
 export function BottomCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleDownload = () => {
+    triggerMacDownload();
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="py-24 px-6">
@@ -20,7 +25,7 @@ export function BottomCTA() {
           ready to try fere?
         </p>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleDownload}
           className="px-5 py-2.5 bg-black text-white rounded-lg flex items-center gap-3 mx-auto hover:bg-black/90 transition-colors"
           style={{
             fontFamily: "var(--font-ui)",

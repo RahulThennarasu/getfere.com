@@ -2,9 +2,14 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { InstallModal } from "../components/InstallModal";
 import appleLogo from "@/assets/apple.png";
+import { triggerMacDownload } from "@/config/download";
 
 export function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleDownload = () => {
+    triggerMacDownload();
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="pt-32 pb-20 px-6">
@@ -160,7 +165,7 @@ export function Hero() {
         </motion.h1>
 
         <motion.button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleDownload}
           className="mt-8 px-5 py-2.5 bg-black text-white rounded-lg flex items-center gap-3 mx-auto hover:bg-black/90 transition-colors"
           initial={{ opacity: 0, y: 20, scale: 0.72 }}
           animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
