@@ -38,7 +38,7 @@ const logos = [
     x: 69,
     y: 19,
     rotate: -22,
-    scatterX: 260,
+    scatterX: 150,
     scatterY: -300,
   },
   {
@@ -57,8 +57,8 @@ const logos = [
     x: 56,
     y: 26,
     rotate: -60,
-    scatterX: 100,
-    scatterY: -180,
+    scatterX: 30,
+    scatterY: -250,
   },
   {
     src: rabbitmq,
@@ -67,7 +67,7 @@ const logos = [
     y: 33,
     rotate: -50,
     scatterX: -200,
-    scatterY: 80,
+    scatterY: 20,
   },
   {
     src: github,
@@ -75,8 +75,8 @@ const logos = [
     x: 77,
     y: 32,
     rotate: -6.6,
-    scatterX: 280,
-    scatterY: -40,
+    scatterX: 100,
+    scatterY: -100,
   },
   // Front layer (rendered last, on top)
   {
@@ -85,7 +85,7 @@ const logos = [
     x: 70,
     y: 44,
     rotate: -52.5,
-    scatterX: 250,
+    scatterX: 160,
     scatterY: 200,
   },
   {
@@ -94,7 +94,7 @@ const logos = [
     x: 55,
     y: 43,
     rotate: -18.4,
-    scatterX: 140,
+    scatterX: 150,
     scatterY: 260,
   },
   {
@@ -113,7 +113,7 @@ const logos = [
     y: 50,
     rotate: -60,
     scatterX: -120,
-    scatterY: 300,
+    scatterY: 400,
   },
 ];
 
