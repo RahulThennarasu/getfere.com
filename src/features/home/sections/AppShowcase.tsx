@@ -22,6 +22,7 @@ const showcaseMedia: ShowcaseMedia[] = [
 ];
 
 const mobileChipLabels = ["service", "container", "requests", "query", "data"];
+const INITIAL_PREVIEW_TIME = 0.45;
 
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,11 +35,26 @@ export function AppShowcase() {
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+
+    mq.addListener(handler);
+    return () => mq.removeListener(handler);
   }, []);
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  const markVideoReady = (index: number) => {
+    setVideoReady((prev) => {
+      if (prev[index]) return prev;
+      const next = [...prev];
+      next[index] = true;
+      return next;
+    });
+  };
 
   const getIndexFromClientX = (clientX: number) => {
     const rail = railRef.current;
@@ -282,14 +298,21 @@ export function AppShowcase() {
                               ? "auto"
                               : "metadata"
                           }
-                          onLoadedData={() => {
-                            setVideoReady((prev) => {
-                              if (prev[index]) return prev;
-                              const next = [...prev];
-                              next[index] = true;
-                              return next;
-                            });
+                          onLoadedMetadata={(event) => {
+                            const video = event.currentTarget;
+                            // Skip intro frames that briefly look blank/unstyled on hard refresh.
+                            if (video.currentTime > 0.01) return;
+                            try {
+                              video.currentTime = Math.min(
+                                INITIAL_PREVIEW_TIME,
+                                Math.max(video.duration - 0.05, 0),
+                              );
+                            } catch {
+                              markVideoReady(index);
+                            }
                           }}
+                          onSeeked={() => markVideoReady(index)}
+                          onLoadedData={() => markVideoReady(index)}
                           aria-label={media.label}
                           className="h-full w-full max-w-none object-cover rounded-2xl scale-[1.08]"
                           style={{ objectPosition: "center center" }}
