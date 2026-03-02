@@ -12,7 +12,7 @@ export function Hero() {
   };
 
   return (
-    <div className="pt-32 pb-20 px-6">
+    <div className="px-6 pt-32 pb-20 md:pt-36 md:pb-24">
       <div className="max-w-4xl mx-auto text-center">
         <motion.h1
           className="text-black/80"
@@ -166,7 +166,7 @@ export function Hero() {
 
         <motion.button
           onClick={handleDownload}
-          className="mt-8 px-5 py-2.5 bg-black text-white rounded-lg flex items-center gap-3 mx-auto hover:bg-black/90 transition-colors"
+          className="px-5 py-2.5 bg-black text-white rounded-lg flex items-center gap-3 mx-auto hover:bg-black/90 transition-colors"
           initial={{ opacity: 0, y: 20, scale: 0.72 }}
           animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
           transition={{ duration: 0.72, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
@@ -174,6 +174,7 @@ export function Hero() {
             fontFamily: "var(--font-ui)",
             fontSize: "15px",
             fontWeight: 500,
+            marginTop: "72px",
           }}
         >
           <img src={appleLogo} alt="Apple" className="h-4 w-auto" />

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
+  useMotionTemplate,
   useScroll,
   useTransform,
   type MotionValue,
@@ -26,8 +27,8 @@ const logos = [
   {
     src: openai,
     label: "OpenAI",
-    x: 41,
-    y: 15,
+    x: -70,
+    y: -45,
     rotate: -23,
     scatterX: -80,
     scatterY: -320,
@@ -35,7 +36,7 @@ const logos = [
   {
     src: vercel,
     label: "Vercel",
-    x: 69,
+    x: 130,
     y: 19,
     rotate: -22,
     scatterX: 150,
@@ -44,7 +45,7 @@ const logos = [
   {
     src: docker,
     label: "Docker",
-    x: 24,
+    x: 0,
     y: 23,
     rotate: 0,
     scatterX: -300,
@@ -54,8 +55,8 @@ const logos = [
   {
     src: k8,
     label: "Kubernetes",
-    x: 56,
-    y: 26,
+    x: 62,
+    y: -45,
     rotate: -60,
     scatterX: 30,
     scatterY: -250,
@@ -63,7 +64,7 @@ const logos = [
   {
     src: rabbitmq,
     label: "RabbitMQ",
-    x: 37,
+    x: -130,
     y: 33,
     rotate: -50,
     scatterX: -200,
@@ -72,8 +73,8 @@ const logos = [
   {
     src: github,
     label: "GitHub",
-    x: 77,
-    y: 32,
+    x: 200,
+    y: -90,
     rotate: -6.6,
     scatterX: 100,
     scatterY: -100,
@@ -82,8 +83,8 @@ const logos = [
   {
     src: cloudfare,
     label: "Cloudflare",
-    x: 70,
-    y: 44,
+    x: 225,
+    y: 200,
     rotate: -52.5,
     scatterX: 160,
     scatterY: 200,
@@ -91,8 +92,8 @@ const logos = [
   {
     src: mongoDB,
     label: "MongoDB",
-    x: 55,
-    y: 43,
+    x: 250,
+    y: 50,
     rotate: -18.4,
     scatterX: 150,
     scatterY: 260,
@@ -100,8 +101,8 @@ const logos = [
   {
     src: redis,
     label: "Redis",
-    x: 26,
-    y: 46,
+    x: 150,
+    y: 200,
     rotate: 2.14,
     scatterX: -340,
     scatterY: 240,
@@ -109,7 +110,7 @@ const logos = [
   {
     src: firebase,
     label: "Firebase",
-    x: 40,
+    x: -40,
     y: 50,
     rotate: -60,
     scatterX: -120,
@@ -118,6 +119,8 @@ const logos = [
 ];
 
 const CONTAINER_H = 580;
+const FERE_SIZE = 170;
+const FERE_TOP_OFFSET = 72;
 
 function LogoItem({
   src,
@@ -127,6 +130,7 @@ function LogoItem({
   rotate,
   scatterX,
   scatterY,
+  containerWidth,
   progress,
 }: {
   src: string;
@@ -136,23 +140,38 @@ function LogoItem({
   rotate: number;
   scatterX: number;
   scatterY: number;
+  containerWidth: number;
   progress: MotionValue<number>;
 }) {
   // Convert y% to a pixel offset so positioning doesn't depend on container height resolving
   const finalY = (y / 100) * CONTAINER_H;
+  const centerXShift =
+    containerWidth > 0 ? ((50 - x) / 100) * containerWidth : 0;
+  const centerY = FERE_TOP_OFFSET + FERE_SIZE / 2;
 
-  // All icons animate together across the full scroll range
-  const translateX = useTransform(progress, [0, 1], [scatterX * 1.5, 0]);
+  // One direct path into the center target.
+  const translateX = useTransform(
+    progress,
+    [0, 1],
+    [scatterX * 1.5, centerXShift],
+  );
   const translateY = useTransform(
     progress,
     [0, 1],
-    [scatterY * 1.5 + finalY, finalY],
+    [scatterY * 1.5 + finalY, centerY],
   );
-  // Start with a wild rotation, settle into the final rotation
+  // Rotate while moving, then settle to the same final angle.
   const scatterRotate = rotate + (scatterX > 0 ? 45 : -45);
-  const rotateVal = useTransform(progress, [0, 1], [scatterRotate, rotate]);
-  const opacity = useTransform(progress, [0, 0.72, 0.92, 1], [1, 1, 0, 0]);
-
+  const rotateVal = useTransform(
+    progress,
+    [0, 0.72, 1],
+    [scatterRotate, rotate, -33],
+  );
+  // Keep full visibility longer, then do a cleaner end fade.
+  const opacity = useTransform(progress, [0, 0.88, 0.97, 1], [1, 1, 0.2, 0]);
+  const scale = useTransform(progress, [0, 0.9, 1], [1, 1, 0.84]);
+  const blurPx = useTransform(progress, [0, 0.92, 1], [0, 0, 8]);
+  const filter = useMotionTemplate`blur(${blurPx}px)`;
   return (
     <motion.div
       className="absolute"
@@ -166,7 +185,9 @@ function LogoItem({
         x: translateX,
         y: translateY,
         rotate: rotateVal,
+        scale,
         opacity,
+        filter,
       }}
     >
       <img
@@ -181,7 +202,9 @@ function LogoItem({
 
 export function StackPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const desktopStackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [desktopStackWidth, setDesktopStackWidth] = useState(0);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -189,6 +212,20 @@ export function StackPreview() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+
+    const updateWidth = () => {
+      const rect = desktopStackRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setDesktopStackWidth(rect.width);
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [isMobile]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -222,58 +259,60 @@ export function StackPreview() {
 
   return (
     <div
-      className={isMobile ? "pb-6 px-6" : "pb-20 px-6"}
-      style={{ paddingTop: isMobile ? "12px" : "0px" }}
+      className={isMobile ? "pb-14 px-6" : "pb-28 px-6"}
+      style={{ paddingTop: isMobile ? "28px" : "36px" }}
       ref={containerRef}
     >
       <div className="max-w-4xl mx-auto text-center">
         {isMobile ? (
-          <div className="mb-3 -mt-6 relative z-10 h-16">
+          <div className="mb-10 mt-2 relative z-10 h-16">
             <motion.p
-              className="text-black/40 absolute inset-0"
+              className="text-black absolute inset-0"
               style={{
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextStartOpacity,
-                y: -70,
+                y: -48,
               }}
             >
               your stack, scattered across a dozen tools
             </motion.p>
             <motion.p
-              className="text-black/40 absolute inset-0"
+              className="text-black absolute inset-0"
               style={{
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextEndOpacity,
-                y: -24,
+                y: -48,
               }}
             >
               observed by one app
             </motion.p>
           </div>
         ) : (
-          <div className="mb-8 relative z-10 h-16">
+          <div className="mb-24 mt-6 relative z-10 h-16">
             <motion.p
-              className="text-black/40 absolute inset-0"
+              className="text-black absolute inset-0"
               style={{
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextStartOpacity,
+                y: -120,
               }}
             >
               your stack, scattered across a dozen tools
             </motion.p>
             <motion.p
-              className="text-black/40 absolute inset-0"
+              className="text-black absolute inset-0"
               style={{
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextEndOpacity,
+                y: -120,
               }}
             >
               observed by one app
@@ -282,7 +321,7 @@ export function StackPreview() {
         )}
 
         {isMobile ? (
-          <div className="relative w-full max-w-sm mx-auto mt-2 h-[300px] overflow-hidden">
+          <div className="relative w-full max-w-sm mx-auto mt-6 h-[300px] overflow-hidden">
             <motion.img
               src={mobileIcons}
               alt="Stack icons"
@@ -304,19 +343,27 @@ export function StackPreview() {
             </motion.div>
           </div>
         ) : (
-          <div className="relative h-[500px] md:h-[580px] max-w-2xl mx-auto mt-8">
-            {logos.map((logo) => (
-              <LogoItem key={logo.label} {...logo} progress={scrollYProgress} />
+          <div
+            ref={desktopStackRef}
+            className="relative h-[500px] md:h-[580px] max-w-4xl mx-auto mt-6"
+          >
+            {logos.map((logo, index) => (
+              <LogoItem
+                key={logo.label}
+                {...logo}
+                containerWidth={desktopStackWidth}
+                progress={scrollYProgress}
+              />
             ))}
             <motion.div
               className="absolute z-20 pointer-events-none"
               style={{
                 left: "50%",
                 top: "50%",
-                width: 200,
-                height: 200,
-                marginLeft: -100,
-                marginTop: 100,
+                width: 170,
+                height: 170,
+                marginLeft: -85,
+                marginTop: 72,
                 opacity: desktopFereOpacity,
               }}
             >

@@ -61,8 +61,8 @@ export default function App() {
       <AppShowcase />
       <section
         style={{
-          paddingTop: isMobile ? "20px" : "0px",
-          paddingBottom: isMobile ? "12px" : "300px",
+          paddingTop: isMobile ? "28px" : "40px",
+          paddingBottom: isMobile ? "40px" : "300px",
         }}
       >
         <StackPreview />

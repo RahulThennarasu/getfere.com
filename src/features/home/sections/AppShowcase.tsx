@@ -27,6 +27,9 @@ export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [videoReady, setVideoReady] = useState<boolean[]>(() =>
+    showcaseMedia.map(() => false),
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -52,6 +55,10 @@ export function AppShowcase() {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       if (index === currentIndex) {
+        // Ensure the active video is kicked into loading state quickly on refresh.
+        if (video.readyState < 2) {
+          video.load();
+        }
         const playPromise = video.play();
         if (playPromise) {
           playPromise.catch(() => {});
@@ -62,10 +69,26 @@ export function AppShowcase() {
     });
   }, [currentIndex]);
 
+  useEffect(() => {
+    const activeVideo = videoRefs.current[currentIndex];
+    if (!activeVideo) return;
+
+    const tryPlay = () => {
+      const playPromise = activeVideo.play();
+      if (playPromise) {
+        playPromise.catch(() => {});
+      }
+    };
+
+    tryPlay();
+    activeVideo.addEventListener("canplay", tryPlay);
+    return () => activeVideo.removeEventListener("canplay", tryPlay);
+  }, [currentIndex]);
+
   return (
     <div
-      className={isMobile ? "pt-12" : "pt-20"}
-      style={{ paddingBottom: isMobile ? "24px" : "192px" }}
+      className={isMobile ? "pt-14" : "pt-20"}
+      style={{ paddingBottom: isMobile ? "44px" : "220px" }}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative mx-auto max-w-6xl w-full flex flex-col">
@@ -80,8 +103,8 @@ export function AppShowcase() {
               ease: [0.22, 1, 0.36, 1],
             }}
             style={{
-              marginTop: isMobile ? "-8px" : "0px",
-              marginBottom: isMobile ? "10px" : "-100px",
+              marginTop: isMobile ? "0px" : "0px",
+              marginBottom: isMobile ? "20px" : "-81px",
               zIndex: 2,
             }}
           >
@@ -243,19 +266,44 @@ export function AppShowcase() {
                     aria-hidden={!isActive}
                   >
                     {media.type === "video" ? (
-                      <video
-                        ref={(node) => {
-                          videoRefs.current[index] = node;
-                        }}
-                        src={media.src}
-                        autoPlay={isActive}
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                        aria-label={media.label}
-                        className="w-full h-full object-cover rounded-2xl"
-                      />
+                      <>
+                        <video
+                          ref={(node) => {
+                            videoRefs.current[index] = node;
+                          }}
+                          src={media.src}
+                          autoPlay={isActive}
+                          loop
+                          muted
+                          playsInline
+                          preload={
+                            isActive ||
+                            index === (currentIndex + 1) % showcaseMedia.length
+                              ? "auto"
+                              : "metadata"
+                          }
+                          onLoadedData={() => {
+                            setVideoReady((prev) => {
+                              if (prev[index]) return prev;
+                              const next = [...prev];
+                              next[index] = true;
+                              return next;
+                            });
+                          }}
+                          aria-label={media.label}
+                          className="h-full w-full max-w-none object-cover rounded-2xl scale-[1.08]"
+                          style={{ objectPosition: "center center" }}
+                        />
+                        {!videoReady[index] && (
+                          <div
+                            className="absolute inset-0 rounded-2xl"
+                            style={{
+                              background:
+                                "linear-gradient(120deg, rgba(15,23,42,0.08) 0%, rgba(15,23,42,0.03) 45%, rgba(15,23,42,0.08) 100%)",
+                            }}
+                          />
+                        )}
+                      </>
                     ) : (
                       <img
                         src={media.src}
