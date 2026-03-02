@@ -292,12 +292,7 @@ export function AppShowcase() {
                           loop
                           muted
                           playsInline
-                          preload={
-                            isActive ||
-                            index === (currentIndex + 1) % showcaseMedia.length
-                              ? "auto"
-                              : "metadata"
-                          }
+                          preload="none"
                           onLoadedMetadata={(event) => {
                             const video = event.currentTarget;
                             // Skip intro frames that briefly look blank/unstyled on hard refresh.
