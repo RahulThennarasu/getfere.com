@@ -71,10 +71,6 @@ export function AppShowcase() {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       if (index === currentIndex) {
-        // Ensure the active video is kicked into loading state quickly on refresh.
-        if (video.readyState < 2) {
-          video.load();
-        }
         const playPromise = video.play();
         if (playPromise) {
           playPromise.catch(() => {});
@@ -292,7 +288,7 @@ export function AppShowcase() {
                           loop
                           muted
                           playsInline
-                          preload="none"
+                          preload={isActive ? "auto" : "none"}
                           onLoadedMetadata={(event) => {
                             const video = event.currentTarget;
                             // Skip intro frames that briefly look blank/unstyled on hard refresh.

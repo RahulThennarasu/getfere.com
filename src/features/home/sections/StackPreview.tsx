@@ -58,8 +58,8 @@ const logos = [
     x: 62,
     y: -45,
     rotate: -60,
-    scatterX: 30,
-    scatterY: -250,
+    scatterX: 500,
+    scatterY: -400,
   },
   {
     src: rabbitmq,
