@@ -233,13 +233,12 @@ export function StackPreview() {
     return () => window.removeEventListener("resize", updateWidth);
   }, [isMobile]);
 
-  // Force Framer Motion to recalculate scroll measurements after fonts/layout settle.
-  // Google Fonts loads async and shifts layout, causing useScroll to read wrong positions.
+  // Force Framer Motion to recalculate scroll measurements after fonts load.
+  // Google Fonts loads async and shifts layout, making useScroll cache wrong positions.
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
+    document.fonts.ready.then(() => {
       window.dispatchEvent(new Event("resize"));
     });
-    return () => cancelAnimationFrame(id);
   }, []);
 
   const { scrollYProgress } = useScroll({
