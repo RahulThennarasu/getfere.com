@@ -11,6 +11,13 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
   useEffect(() => {
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
 
