@@ -288,10 +288,12 @@ export function AppShowcase() {
                           loop
                           muted
                           playsInline
-                          preload={isActive ? "auto" : "none"}
+                          preload={isActive ? "auto" : "metadata"}
                           onLoadedMetadata={(event) => {
+                            // Only seek the active video to skip blank intro frames.
+                            // Non-active videos: no seek needed, canPlay will mark ready.
+                            if (!isActive) return;
                             const video = event.currentTarget;
-                            // Skip intro frames that briefly look blank/unstyled on hard refresh.
                             if (video.currentTime > 0.01) return;
                             try {
                               video.currentTime = Math.min(
@@ -302,6 +304,7 @@ export function AppShowcase() {
                               markVideoReady(index);
                             }
                           }}
+                          onCanPlay={() => markVideoReady(index)}
                           onSeeked={() => markVideoReady(index)}
                           onLoadedData={() => markVideoReady(index)}
                           aria-label={media.label}
