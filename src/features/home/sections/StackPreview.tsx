@@ -3,7 +3,6 @@ import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
   useSpring,
-  useMotionTemplate,
   useScroll,
   useTransform,
   type MotionValue,
@@ -133,6 +132,7 @@ function LogoItem({
   scatterY,
   containerWidth,
   progress,
+  eagerLoad,
 }: {
   src: string;
   label: string;
@@ -143,6 +143,7 @@ function LogoItem({
   scatterY: number;
   containerWidth: number;
   progress: MotionValue<number>;
+  eagerLoad: boolean;
 }) {
   // Convert y% to a pixel offset so positioning doesn't depend on container height resolving
   const finalY = (y / 100) * CONTAINER_H;
@@ -171,8 +172,6 @@ function LogoItem({
   // Keep full visibility longer, then do a cleaner end fade.
   const opacity = useTransform(progress, [0, 0.88, 0.97, 1], [1, 1, 0.2, 0]);
   const scale = useTransform(progress, [0, 0.9, 1], [1, 1, 0.84]);
-  const blurPx = useTransform(progress, [0, 0.92, 1], [0, 0, 8]);
-  const filter = useMotionTemplate`blur(${blurPx}px)`;
   return (
     <motion.div
       className="absolute"
@@ -188,7 +187,7 @@ function LogoItem({
         rotate: rotateVal,
         scale,
         opacity,
-        filter,
+        willChange: "transform, opacity",
       }}
     >
       <img
@@ -196,7 +195,7 @@ function LogoItem({
         alt={label}
         className="w-full h-full object-contain"
         draggable={false}
-        loading="lazy"
+        loading={eagerLoad ? "eager" : "lazy"}
         decoding="async"
       />
     </motion.div>
@@ -208,6 +207,7 @@ export function StackPreview() {
   const desktopStackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const [desktopStackWidth, setDesktopStackWidth] = useState(0);
+  const [eagerLoadDesktopLogos, setEagerLoadDesktopLogos] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -234,6 +234,33 @@ export function StackPreview() {
     updateWidth();
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
+  }, [isMobile]);
+
+  // Warm up stack images before the user reaches this section so first-scroll
+  // animation does not hitch on image decode.
+  useEffect(() => {
+    if (isMobile) return;
+
+    const preloadLogos = () => {
+      logos.forEach(({ src }) => {
+        const img = new Image();
+        img.src = src;
+        if (typeof img.decode === "function") {
+          img.decode().catch(() => {});
+        }
+      });
+      setEagerLoadDesktopLogos(true);
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(preloadLogos, {
+        timeout: 1200,
+      });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = window.setTimeout(preloadLogos, 250);
+    return () => window.clearTimeout(timeoutId);
   }, [isMobile]);
 
   // Force Framer Motion to recalculate scroll measurements after fonts load.
@@ -377,6 +404,7 @@ export function StackPreview() {
                 {...logo}
                 containerWidth={desktopStackWidth}
                 progress={smoothScrollProgress}
+                eagerLoad={eagerLoadDesktopLogos}
               />
             ))}
             <motion.div
