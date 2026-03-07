@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
+  useSpring,
   useMotionTemplate,
   useScroll,
   useTransform,
@@ -195,6 +196,8 @@ function LogoItem({
         alt={label}
         className="w-full h-full object-contain"
         draggable={false}
+        loading="lazy"
+        decoding="async"
       />
     </motion.div>
   );
@@ -243,31 +246,36 @@ export function StackPreview() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "center center"],
+    offset: ["start end", "end center"],
+  });
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 55,
+    damping: 20,
+    mass: 0.7,
   });
   const desktopTextStartOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.7, 0.9, 1],
+    smoothScrollProgress,
+    [0, 0.74, 0.94, 1],
     [1, 1, 0, 0],
   );
   const desktopTextEndOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.7, 0.9, 1],
+    smoothScrollProgress,
+    [0, 0.74, 0.94, 1],
     [0, 0, 1, 1],
   );
   const desktopFereOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.72, 0.92, 1],
+    smoothScrollProgress,
+    [0, 0.76, 0.95, 1],
     [0, 0, 1, 1],
   );
   const mobileStackOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.72, 0.92, 1],
+    smoothScrollProgress,
+    [0, 0.76, 0.95, 1],
     [1, 1, 0, 0],
   );
   const mobileFereOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.72, 0.92, 1],
+    smoothScrollProgress,
+    [0, 0.76, 0.95, 1],
     [0, 0, 1, 1],
   );
 
@@ -342,6 +350,8 @@ export function StackPreview() {
               className="w-full h-full object-cover object-top"
               style={{ opacity: mobileStackOpacity, y: 20 }}
               draggable={false}
+              loading="lazy"
+              decoding="async"
             />
             <motion.div
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -366,7 +376,7 @@ export function StackPreview() {
                 key={logo.label}
                 {...logo}
                 containerWidth={desktopStackWidth}
-                progress={scrollYProgress}
+                progress={smoothScrollProgress}
               />
             ))}
             <motion.div

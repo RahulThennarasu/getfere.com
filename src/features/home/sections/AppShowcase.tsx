@@ -22,12 +22,13 @@ const showcaseMedia: ShowcaseMedia[] = [
 ];
 
 const mobileChipLabels = ["service", "container", "requests", "query", "data"];
-const INITIAL_PREVIEW_TIME = 0.45;
+const VIDEO_FADE_DURATION = 0.6;
 
 export function AppShowcase() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [hasEnteredViewport, setHasEnteredViewport] = useState(false);
   const [videoReady, setVideoReady] = useState<boolean[]>(() =>
     showcaseMedia.map(() => false),
   );
@@ -44,6 +45,7 @@ export function AppShowcase() {
     mq.addListener(handler);
     return () => mq.removeListener(handler);
   }, []);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -68,6 +70,27 @@ export function AppShowcase() {
   };
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || hasEnteredViewport) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
+          setHasEnteredViewport(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [hasEnteredViewport]);
+
+  useEffect(() => {
+    if (!hasEnteredViewport) return;
+
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       if (index === currentIndex) {
@@ -79,11 +102,16 @@ export function AppShowcase() {
         video.pause();
       }
     });
-  }, [currentIndex]);
+  }, [currentIndex, hasEnteredViewport]);
 
   useEffect(() => {
+    if (!hasEnteredViewport) return;
+
     const activeVideo = videoRefs.current[currentIndex];
     if (!activeVideo) return;
+    if (activeVideo.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      markVideoReady(currentIndex);
+    }
 
     const tryPlay = () => {
       const playPromise = activeVideo.play();
@@ -95,10 +123,11 @@ export function AppShowcase() {
     tryPlay();
     activeVideo.addEventListener("canplay", tryPlay);
     return () => activeVideo.removeEventListener("canplay", tryPlay);
-  }, [currentIndex]);
+  }, [currentIndex, hasEnteredViewport]);
 
   return (
     <div
+      ref={sectionRef}
       className={isMobile ? "pt-14" : "pt-20"}
       style={{ paddingBottom: isMobile ? "44px" : "220px" }}
     >
@@ -110,8 +139,8 @@ export function AppShowcase() {
             initial={{ opacity: 0, y: 20, scale: 0.72 }}
             animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
             transition={{
-              duration: 0.72,
-              delay: 0.62,
+              duration: 1.05,
+              delay: 0.5,
               ease: [0.22, 1, 0.36, 1],
             }}
             style={{
@@ -260,20 +289,25 @@ export function AppShowcase() {
               initial={{ opacity: 0, y: 20, scale: 0.72 }}
               animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
               transition={{
-                duration: 0.72,
-                delay: 0.62,
+                duration: 1.05,
+                delay: 0.56,
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ minHeight: isMobile ? "260px" : "600px" }}
             >
               {showcaseMedia.map((media, index) => {
                 const isActive = index === currentIndex;
+                const isNeighbor = Math.abs(index - currentIndex) === 1;
+                const shouldPreload = hasEnteredViewport && (isActive || isNeighbor);
                 return (
                   <motion.div
                     key={media.label}
                     initial={false}
                     animate={{ opacity: isActive ? 1 : 0 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{
+                      duration: VIDEO_FADE_DURATION,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
                     className={`absolute inset-2 ${isActive ? "pointer-events-auto" : "pointer-events-none"}`}
                     aria-hidden={!isActive}
                   >
@@ -284,29 +318,14 @@ export function AppShowcase() {
                             videoRefs.current[index] = node;
                           }}
                           src={media.src}
-                          autoPlay={isActive}
+                          autoPlay={hasEnteredViewport && isActive}
                           loop
                           muted
                           playsInline
-                          preload={isActive ? "auto" : "metadata"}
-                          onLoadedMetadata={(event) => {
-                            // Only seek the active video to skip blank intro frames.
-                            // Non-active videos: no seek needed, canPlay will mark ready.
-                            if (!isActive) return;
-                            const video = event.currentTarget;
-                            if (video.currentTime > 0.01) return;
-                            try {
-                              video.currentTime = Math.min(
-                                INITIAL_PREVIEW_TIME,
-                                Math.max(video.duration - 0.05, 0),
-                              );
-                            } catch {
-                              markVideoReady(index);
-                            }
-                          }}
+                          preload={shouldPreload ? "auto" : "metadata"}
                           onCanPlay={() => markVideoReady(index)}
-                          onSeeked={() => markVideoReady(index)}
                           onLoadedData={() => markVideoReady(index)}
+                          onError={() => markVideoReady(index)}
                           aria-label={media.label}
                           className="h-full w-full max-w-none object-cover rounded-2xl scale-[1.08]"
                           style={{ objectPosition: "center center" }}

@@ -41,7 +41,7 @@ export function Hero() {
                 scale: [0.6, 1.12, 1],
                 filter: "blur(0px)",
               }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
             >
               see{" "}
             </motion.span>
@@ -62,8 +62,8 @@ export function Hero() {
                 filter: "blur(0px)",
               }}
               transition={{
-                duration: 0.75,
-                delay: 0.08,
+                duration: 1.05,
+                delay: 0.14,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
@@ -89,8 +89,8 @@ export function Hero() {
                 filter: "blur(0px)",
               }}
               transition={{
-                duration: 0.72,
-                delay: 0.16,
+                duration: 1,
+                delay: 0.24,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
@@ -106,8 +106,8 @@ export function Hero() {
                 filter: "blur(0px)",
               }}
               transition={{
-                duration: 0.72,
-                delay: 0.22,
+                duration: 1,
+                delay: 0.31,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
@@ -130,8 +130,8 @@ export function Hero() {
                 filter: "blur(0px)",
               }}
               transition={{
-                duration: 0.72,
-                delay: 0.28,
+                duration: 1,
+                delay: 0.38,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
@@ -154,8 +154,8 @@ export function Hero() {
                 filter: "blur(0px)",
               }}
               transition={{
-                duration: 0.72,
-                delay: 0.34,
+                duration: 1,
+                delay: 0.46,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
@@ -169,7 +169,7 @@ export function Hero() {
           className="px-5 py-2.5 bg-black text-white rounded-lg flex items-center gap-3 mx-auto hover:bg-black/90 transition-colors"
           initial={{ opacity: 0, y: 20, scale: 0.72 }}
           animate={{ opacity: 1, y: 0, scale: [0.72, 1.08, 1] }}
-          transition={{ duration: 0.72, delay: 0.62, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.02, delay: 0.76, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: "var(--font-ui)",
             fontSize: "15px",

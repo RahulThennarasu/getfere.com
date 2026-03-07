@@ -5,11 +5,6 @@ import step2Image from "@/assets/step_2.png";
 import step3Image from "@/assets/step_3.png";
 import { triggerMacDownload } from "@/config/download";
 
-[step1Image, step2Image, step3Image].forEach((src) => {
-  const img = new Image();
-  img.src = src;
-});
-
 interface InstallModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -93,6 +88,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                         src={step1Image}
                         alt="Downloads folder"
                         className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -131,6 +128,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                         src={step2Image}
                         alt="Drag to Applications"
                         className="w-full h-full object-contain"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -169,6 +168,8 @@ export function InstallModal({ isOpen, onClose }: InstallModalProps) {
                         src={step3Image}
                         alt="Open application"
                         className="w-full h-full object-contain"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   </div>
