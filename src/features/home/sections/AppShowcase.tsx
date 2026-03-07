@@ -81,7 +81,10 @@ export function AppShowcase() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 },
+      {
+        threshold: 0,
+        rootMargin: "520px 0px",
+      },
     );
 
     observer.observe(section);
@@ -298,7 +301,8 @@ export function AppShowcase() {
               {showcaseMedia.map((media, index) => {
                 const isActive = index === currentIndex;
                 const isNeighbor = Math.abs(index - currentIndex) === 1;
-                const shouldPreload = hasEnteredViewport && (isActive || isNeighbor);
+                const shouldPreload =
+                  index === 0 || (hasEnteredViewport && (isActive || isNeighbor));
                 return (
                   <motion.div
                     key={media.label}
@@ -318,7 +322,7 @@ export function AppShowcase() {
                             videoRefs.current[index] = node;
                           }}
                           src={media.src}
-                          autoPlay={hasEnteredViewport && isActive}
+                          autoPlay={isActive}
                           loop
                           muted
                           playsInline
