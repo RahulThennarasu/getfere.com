@@ -279,10 +279,8 @@ export function StackPreview() {
     offset: ["center center", "end start"],
   });
   const stagedProgress = useTransform(scrollYProgress, [0, 0.1, 1], [0, 0, 1]);
-  const desktopPieceProgress = useTransform(
-    stagedProgress,
-    [0, 0.3, 0.7, 1],
-    [0, 0.22, 0.58, 1],
+  const desktopPieceProgress = useTransform(stagedProgress, (value) =>
+    Math.pow(value, 0.65),
   );
   const targetX = desktopStackWidth > 0 ? desktopStackWidth / 2 : 0;
   const targetY = desktopStackHeight > 0 ? desktopStackHeight / 2 : CONTAINER_H / 2;
