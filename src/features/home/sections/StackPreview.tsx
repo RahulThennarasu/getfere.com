@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import mobileIcons from "@/assets/mobile_icons.png";
 import {
   motion,
-  useSpring,
   useScroll,
   useTransform,
   type MotionValue,
@@ -118,9 +117,7 @@ const logos = [
   },
 ];
 
-const CONTAINER_H = 580;
-const FERE_SIZE = 170;
-const FERE_TOP_OFFSET = 72;
+const CONTAINER_H = 640;
 
 function LogoItem({
   src,
@@ -131,6 +128,8 @@ function LogoItem({
   scatterX,
   scatterY,
   containerWidth,
+  targetX,
+  targetY,
   progress,
   eagerLoad,
 }: {
@@ -142,14 +141,15 @@ function LogoItem({
   scatterX: number;
   scatterY: number;
   containerWidth: number;
+  targetX: number;
+  targetY: number;
   progress: MotionValue<number>;
   eagerLoad: boolean;
 }) {
-  // Convert y% to a pixel offset so positioning doesn't depend on container height resolving
-  const finalY = (y / 100) * CONTAINER_H;
-  const centerXShift =
-    containerWidth > 0 ? ((50 - x) / 100) * containerWidth : 0;
-  const centerY = FERE_TOP_OFFSET + FERE_SIZE / 2;
+  const resolvedHeight = targetY > 0 ? targetY * 2 : CONTAINER_H;
+  const finalY = (y / 100) * resolvedHeight;
+  const originX = containerWidth > 0 ? (x / 100) * containerWidth : 0;
+  const centerXShift = targetX - originX;
 
   // One direct path into the center target.
   const translateX = useTransform(
@@ -160,7 +160,7 @@ function LogoItem({
   const translateY = useTransform(
     progress,
     [0, 1],
-    [scatterY * 1.5 + finalY, centerY],
+    [scatterY * (scatterY > 0 ? 1 : 1.5) + finalY, targetY],
   );
   // Rotate while moving, then settle to the same final angle.
   const scatterRotate = rotate + (scatterX > 0 ? 45 : -45);
@@ -207,6 +207,7 @@ export function StackPreview() {
   const desktopStackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const [desktopStackWidth, setDesktopStackWidth] = useState(0);
+  const [desktopStackHeight, setDesktopStackHeight] = useState(CONTAINER_H);
   const [eagerLoadDesktopLogos, setEagerLoadDesktopLogos] = useState(false);
 
   useEffect(() => {
@@ -225,15 +226,16 @@ export function StackPreview() {
   useEffect(() => {
     if (isMobile) return;
 
-    const updateWidth = () => {
+    const updateMetrics = () => {
       const rect = desktopStackRef.current?.getBoundingClientRect();
       if (!rect) return;
       setDesktopStackWidth(rect.width);
+      setDesktopStackHeight(rect.height);
     };
 
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
+    updateMetrics();
+    window.addEventListener("resize", updateMetrics);
+    return () => window.removeEventListener("resize", updateMetrics);
   }, [isMobile]);
 
   // Warm up stack images before the user reaches this section so first-scroll
@@ -273,36 +275,34 @@ export function StackPreview() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end center"],
+    offset: ["center center", "end start"],
   });
-  const smoothScrollProgress = useSpring(scrollYProgress, {
-    stiffness: 55,
-    damping: 20,
-    mass: 0.7,
-  });
+  const stagedProgress = useTransform(scrollYProgress, [0, 0.18, 1], [0, 0, 1]);
+  const targetX = desktopStackWidth > 0 ? desktopStackWidth / 2 : 0;
+  const targetY = desktopStackHeight > 0 ? desktopStackHeight / 2 : CONTAINER_H / 2;
   const desktopTextStartOpacity = useTransform(
-    smoothScrollProgress,
+    scrollYProgress,
     [0, 0.74, 0.94, 1],
     [1, 1, 0, 0],
   );
   const desktopTextEndOpacity = useTransform(
-    smoothScrollProgress,
+    scrollYProgress,
     [0, 0.74, 0.94, 1],
     [0, 0, 1, 1],
   );
   const desktopFereOpacity = useTransform(
-    smoothScrollProgress,
-    [0, 0.76, 0.95, 1],
+    stagedProgress,
+    [0, 0.78, 0.92, 1],
     [0, 0, 1, 1],
   );
   const mobileStackOpacity = useTransform(
-    smoothScrollProgress,
+    scrollYProgress,
     [0, 0.76, 0.95, 1],
     [1, 1, 0, 0],
   );
   const mobileFereOpacity = useTransform(
-    smoothScrollProgress,
-    [0, 0.76, 0.95, 1],
+    stagedProgress,
+    [0, 0.78, 0.92, 1],
     [0, 0, 1, 1],
   );
 
@@ -322,7 +322,7 @@ export function StackPreview() {
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextStartOpacity,
-                y: -48,
+                y: 16,
               }}
             >
               your stack, scattered across a dozen tools
@@ -334,7 +334,7 @@ export function StackPreview() {
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextEndOpacity,
-                y: -48,
+                y: 16,
               }}
             >
               observed by one app
@@ -349,7 +349,7 @@ export function StackPreview() {
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextStartOpacity,
-                y: -120,
+                y: -16,
               }}
             >
               your stack, scattered across a dozen tools
@@ -361,7 +361,7 @@ export function StackPreview() {
                 fontSize: "28px",
                 fontWeight: 400,
                 opacity: desktopTextEndOpacity,
-                y: -120,
+                y: -16,
               }}
             >
               observed by one app
@@ -396,26 +396,30 @@ export function StackPreview() {
         ) : (
           <div
             ref={desktopStackRef}
-            className="relative h-[500px] md:h-[580px] max-w-4xl mx-auto mt-6"
+            className="relative h-[560px] md:h-[640px] max-w-4xl mx-auto mt-6"
           >
             {logos.map((logo, index) => (
               <LogoItem
                 key={logo.label}
                 {...logo}
                 containerWidth={desktopStackWidth}
-                progress={smoothScrollProgress}
+                targetX={targetX}
+                targetY={targetY}
+                progress={stagedProgress}
                 eagerLoad={eagerLoadDesktopLogos}
               />
             ))}
             <motion.div
               className="absolute z-20 pointer-events-none"
               style={{
-                left: "50%",
-                top: "50%",
+                left: 0,
+                top: 0,
                 width: 170,
                 height: 170,
                 marginLeft: -85,
-                marginTop: 72,
+                marginTop: -85,
+                x: targetX,
+                y: targetY,
                 opacity: desktopFereOpacity,
               }}
             >
