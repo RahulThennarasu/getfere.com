@@ -132,7 +132,7 @@ export function AppShowcase() {
     <div
       ref={sectionRef}
       className={isMobile ? "pt-14" : "pt-20"}
-      style={{ paddingBottom: isMobile ? "44px" : "220px" }}
+      style={{ paddingBottom: isMobile ? "44px" : "120px" }}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="relative mx-auto max-w-6xl w-full flex flex-col">

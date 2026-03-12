@@ -118,6 +118,7 @@ const logos = [
 ];
 
 const CONTAINER_H = 640;
+const DESKTOP_TEXT_OFFSET = 190;
 
 function LogoItem({
   src,
@@ -277,17 +278,32 @@ export function StackPreview() {
     target: containerRef,
     offset: ["center center", "end start"],
   });
-  const stagedProgress = useTransform(scrollYProgress, [0, 0.18, 1], [0, 0, 1]);
+  const stagedProgress = useTransform(scrollYProgress, [0, 0.1, 1], [0, 0, 1]);
+  const desktopPieceProgress = useTransform(
+    stagedProgress,
+    [0, 0.3, 0.7, 1],
+    [0, 0.22, 0.58, 1],
+  );
   const targetX = desktopStackWidth > 0 ? desktopStackWidth / 2 : 0;
   const targetY = desktopStackHeight > 0 ? desktopStackHeight / 2 : CONTAINER_H / 2;
-  const desktopTextStartOpacity = useTransform(
+  const mobileTextStartOpacity = useTransform(
     scrollYProgress,
     [0, 0.74, 0.94, 1],
     [1, 1, 0, 0],
   );
-  const desktopTextEndOpacity = useTransform(
+  const mobileTextEndOpacity = useTransform(
     scrollYProgress,
     [0, 0.74, 0.94, 1],
+    [0, 0, 1, 1],
+  );
+  const desktopTextStartOpacity = useTransform(
+    stagedProgress,
+    [0, 0.9, 0.985, 1],
+    [1, 1, 0, 0],
+  );
+  const desktopTextEndOpacity = useTransform(
+    stagedProgress,
+    [0, 0.9, 0.985, 1],
     [0, 0, 1, 1],
   );
   const desktopFereOpacity = useTransform(
@@ -301,8 +317,8 @@ export function StackPreview() {
     [1, 1, 0, 0],
   );
   const mobileFereOpacity = useTransform(
-    stagedProgress,
-    [0, 0.78, 0.92, 1],
+    scrollYProgress,
+    [0, 0.76, 0.95, 1],
     [0, 0, 1, 1],
   );
 
@@ -321,8 +337,8 @@ export function StackPreview() {
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
-                opacity: desktopTextStartOpacity,
-                y: 16,
+                opacity: mobileTextStartOpacity,
+                y: -48,
               }}
             >
               your stack, scattered across a dozen tools
@@ -333,40 +349,15 @@ export function StackPreview() {
                 fontFamily: "var(--font-ui)",
                 fontSize: "28px",
                 fontWeight: 400,
-                opacity: desktopTextEndOpacity,
-                y: 16,
+                opacity: mobileTextEndOpacity,
+                y: -48,
               }}
             >
               observed by one app
             </motion.p>
           </div>
         ) : (
-          <div className="mb-24 mt-6 relative z-10 h-16">
-            <motion.p
-              className="text-black absolute inset-0"
-              style={{
-                fontFamily: "var(--font-ui)",
-                fontSize: "28px",
-                fontWeight: 400,
-                opacity: desktopTextStartOpacity,
-                y: -16,
-              }}
-            >
-              your stack, scattered across a dozen tools
-            </motion.p>
-            <motion.p
-              className="text-black absolute inset-0"
-              style={{
-                fontFamily: "var(--font-ui)",
-                fontSize: "28px",
-                fontWeight: 400,
-                opacity: desktopTextEndOpacity,
-                y: -16,
-              }}
-            >
-              observed by one app
-            </motion.p>
-          </div>
+          <div className="mb-16 mt-6 relative z-10 h-16" />
         )}
 
         {isMobile ? (
@@ -405,7 +396,7 @@ export function StackPreview() {
                 containerWidth={desktopStackWidth}
                 targetX={targetX}
                 targetY={targetY}
-                progress={stagedProgress}
+                progress={desktopPieceProgress}
                 eagerLoad={eagerLoadDesktopLogos}
               />
             ))}
@@ -430,6 +421,36 @@ export function StackPreview() {
                 draggable={false}
               />
             </motion.div>
+            <motion.p
+              className="absolute z-30 text-black pointer-events-none whitespace-nowrap"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextStartOpacity,
+                left: targetX,
+                top: targetY - DESKTOP_TEXT_OFFSET,
+                x: "-50%",
+                y: "-50%",
+              }}
+            >
+              your stack, scattered across a dozen tools
+            </motion.p>
+            <motion.p
+              className="absolute z-30 text-black pointer-events-none whitespace-nowrap"
+              style={{
+                fontFamily: "var(--font-ui)",
+                fontSize: "28px",
+                fontWeight: 400,
+                opacity: desktopTextEndOpacity,
+                left: targetX,
+                top: targetY + DESKTOP_TEXT_OFFSET,
+                x: "-50%",
+                y: "-50%",
+              }}
+            >
+              observed by one app
+            </motion.p>
           </div>
         )}
       </div>
